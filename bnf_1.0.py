@@ -1,5 +1,5 @@
 from io import BytesIO
-import requests, time, re
+import requests, time, regex
 
 def main():
 	print(u"Enter the ARK identifant of the book you wish to download:")
@@ -19,7 +19,7 @@ def main():
 	download_images(ark_id, book_id, page, lastpage)
 
 def print_title(source):
-	match = re.search(r"<title>.+?</title>", source.text)
+	match = regex.search(r"<title>.+?</title>", source.text)
 	title = match.group(0)[7:-8]
 	print("\n{0}\n".format(title))
 
@@ -35,7 +35,7 @@ def calculate_pages(source):
 		choice = input()
 		if choice == "y" or choice == "Y" or choice == "yes" or choice == "YES":
 			print("Calculating total number of pages...")
-			match = re.search(r"nbTotalVues\\\":.+?,", source.text)
+			match = regex.search(r"nbTotalVues\\\":.+?,", source.text)
 			lastpage = int(match.group(0)[14:-1])
 			print("Total number of pages = {0}.\n".format(lastpage))
 			break
@@ -53,10 +53,10 @@ def calculate_pages(source):
 def calculate_image_size(ark_id, book_id, page):
 	zoom_url = "http://gallica.bnf.fr/services/ajax/mode/SINGLE/ark:/{0}/{1}/f{2}.image.zoom".format(ark_id, book_id, page)
 	source = get_source(zoom_url)
-	searchstring = re.compile("\\\"_width\\\":.{0,5},\\\"_height\\\":.{0,5},.{0,50}\\\"_id\\\":\\\"ark:/" + str(ark_id) + "/" + str(book_id) + "/f" + str(page) + "\\\"")
+	searchstring = regex.compile("\\\"_width\\\":.{0,5},\\\"_height\\\":.{0,5},.{0,50}\\\"_id\\\":\\\"ark:/" + str(ark_id) + "/" + str(book_id) + "/f" + str(page) + "\\\"")
 	match = searchstring.search(source.text)
-	x = int(re.search("\\\"_width\\\":.{0,5},", match.group(0)).group(0)[9:-1])
-	y = int(re.search("\\\"_height\\\":.{0,5},", match.group(0)).group(0)[10:-1])
+	x = int(regex.search("\\\"_width\\\":.{0,5},", match.group(0)).group(0)[9:-1])
+	y = int(regex.search("\\\"_height\\\":.{0,5},", match.group(0)).group(0)[10:-1])
 	print(x, y)
 	#x = 0 #set x manually (size doesn't matter, as long as x is larger than the x value of the largest page)
 	#y = 0 #set y manually (should be set to the exact value of y or warping will occur)
