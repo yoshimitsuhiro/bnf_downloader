@@ -57,7 +57,6 @@ def calculate_image_size(ark_id, book_id, page):
 	match = searchstring.search(source.text)
 	x = int(regex.search("\\\"_width\\\":.{0,5},", match.group(0)).group(0)[9:-1])
 	y = int(regex.search("\\\"_height\\\":.{0,5},", match.group(0)).group(0)[10:-1])
-	print(x, y)
 	#x = 0 #set x manually (size doesn't matter, as long as x is larger than the x value of the largest page)
 	#y = 0 #set y manually (should be set to the exact value of y or warping will occur)
 	return(x, y)
