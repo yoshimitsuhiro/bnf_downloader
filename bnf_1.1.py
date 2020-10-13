@@ -28,7 +28,7 @@ def calculate_pages(source):
 	while True:
 		page = input("") #get first page number
 		if page.isdigit(): break
-		else: print(u"Invalid input! Be input an integer value.")
+		else: print(u"Invalid input! Be sure to input an integer value.")
 	page = int(page)
 	print(u"Calculate last page automatically (for downloading entire book) (y/n)?")
 	while True:
