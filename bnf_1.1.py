@@ -3,14 +3,14 @@ import requests, time, regex
 
 def main():
 	print(u"Enter the ARK identifant of the book you wish to download:")
-	print(u"(Url should look similar to this: \"http://gallica.bnf.fr/ark:/12148/btv1b8454684f\")")
+	print(u"(Url should look similar to this: \"https://gallica.bnf.fr/ark:/12148/btv1b8454684f\")")
 	while True:
 		ark_url = input("") #get URL of book
-		if ark_url[:27] == "http://gallica.bnf.fr/ark:/": break
-		else: print(u"Invalid input! Be sure to enter the full URL including http://.")
+		if ark_url[:28] == "https://gallica.bnf.fr/ark:/": break
+		else: print(u"Invalid input! Be sure to enter the full URL including https://.")
 	ark_id = ark_url.split("/")[-2]
 	book_id = ark_url.split("/")[-1]
-	#ark_url = "http://gallica.bnf.fr/ark:/xxxxx/xxxxxxxxxxxxx" #manually set ark_url
+	#ark_url = "https://gallica.bnf.fr/ark:/xxxxx/xxxxxxxxxxxxx" #manually set ark_url
 	#ark_id = xxxxx #manually set ark_id
 	#book_id = "xxxxxxxxxxxxx" #manually set book_id
 	source = get_source(ark_url)
@@ -51,9 +51,9 @@ def calculate_pages(source):
 	return(page, lastpage)
 
 def calculate_image_size(ark_id, book_id, page):
-	zoom_url = "http://gallica.bnf.fr/services/ajax/mode/SINGLE/ark:/{0}/{1}/f{2}.image.zoom".format(ark_id, book_id, page)
+	zoom_url = "https://gallica.bnf.fr/services/ajax/mode/SINGLE/ark:/{0}/{1}/f{2}.image.zoom".format(ark_id, book_id, page)
 	source = get_source(zoom_url)
-	searchstring = regex.compile("\\\"_width\\\":.{0,5},\\\"_height\\\":.{0,5},.{0,50}\\\"_id\\\":\\\"ark:/" + str(ark_id) + "/" + str(book_id) + "/f" + str(page) + "\\\"")
+	searchstring = regex.compile("\\\"ark:/" + str(ark_id) + "/" + str(book_id) + "/f" + str(page) + "\\\",\\\"_width\":.{0,5},\\\"_height\\\":.{0,5},")
 	match = searchstring.search(source.text)
 	x = int(regex.search("\\\"_width\\\":.{0,5},", match.group(0)).group(0)[9:-1])
 	y = int(regex.search("\\\"_height\\\":.{0,5},", match.group(0)).group(0)[10:-1])
@@ -75,7 +75,7 @@ def download_images(ark_id, book_id, page, lastpage):
 			filename = "{0}.jpg".format(page)
 		x, y = calculate_image_size(ark_id, book_id, page)
 		print("Now downloading page {0} of {1} (x = {2}, y = {3}).".format(page, lastpage, x, y))
-		image_url = "http://gallica.bnf.fr/iiif/ark:/{0}/{1}/f{2}/0,0,{3},{4}/{3},{4}/0/native.jpg".format(ark_id, book_id, page, x, y)
+		image_url = "https://gallica.bnf.fr/iiif/ark:/{0}/{1}/f{2}/0,0,{3},{4}/{3},{4}/0/native.jpg".format(ark_id, book_id, page, x, y)
 		source = get_source(image_url)
 		with open(filename, "wb") as f:
 			f.write(source.content)
