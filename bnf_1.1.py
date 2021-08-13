@@ -65,21 +65,13 @@ def download_images(ark_id, book_id, page, lastpage):
 	#page = 1 #manually set first page
 	#lastpage = 246 #manually set last page
 	while page <= lastpage:
-		if page < 10:
-			filename = "000{0}.jpg".format(page)
-		elif page < 100:
-			filename = "00{0}.jpg".format(page)
-		elif page < 1000:
-			filename = "0{0}.jpg".format(page)
-		else:
-			filename = "{0}.jpg".format(page)
+		filename = "%04d.jpg" % (page,)
 		x, y = calculate_image_size(ark_id, book_id, page)
 		print("Now downloading page {0} of {1} (x = {2}, y = {3}).".format(page, lastpage, x, y))
 		image_url = "https://gallica.bnf.fr/iiif/ark:/{0}/{1}/f{2}/0,0,{3},{4}/{3},{4}/0/native.jpg".format(ark_id, book_id, page, x, y)
 		source = get_source(image_url)
 		with open(filename, "wb") as f:
 			f.write(source.content)
-			f.closed
 		page += 1
 
 def get_source(url):
